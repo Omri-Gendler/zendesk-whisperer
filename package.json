@@ -1,0 +1,11 @@
+{
+  "name": "zendesk-sidepanel-extension",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Chrome extension. npm start opens Chrome with this folder loaded unpacked.",
+  "type": "module",
+  "scripts": {
+    "start": "node start.mjs",
+    "backend": "npm start --prefix backend"
+  }
+}

@@ -68,7 +68,7 @@ const HOTEL_BRANDS =
   /\b((?:The\s+)?(?:Holiday Inn|Hilton|Marriott|Sheraton|Hyatt|Ibis|Novotel|Crowne Plaza|Royal National|La Corte|Best Western|NH Hotels?|Radisson|Mercure|Premier Inn|Altair)[A-Za-z\s'-]{0,40})/i;
 const HOTEL_GENERIC = /\b((?:The\s+)?[A-Z][A-Za-z']+(?:\s+[A-Z][A-Za-z']+){0,4}\s+Hotel(?:\s+[A-Z][A-Za-z']+){0,3})\b/;
 
-function hasHebrew(text) {
+export function hasHebrew(text) {
   return /[\u0590-\u05FF]/.test(text || '');
 }
 
@@ -496,6 +496,84 @@ function buildIntro(ticket, facts, hebrew) {
   return `Here are the messages and summary for ticket (${ticket.id})${who ? ` of ${who}` : ''}:`;
 }
 
+export const NOTE_FIELDS = [
+  { key: 'orderNumber', label: 'מספר הזמנה' },
+  { key: 'supplierName', label: 'שם הספק' },
+  { key: 'description', label: 'תיאור הפנייה' },
+  { key: 'actionsTaken', label: 'פעולות שבוצעו' },
+  { key: 'followUp', label: 'הערות והמשך טיפול' },
+];
+
+export function emptyTicketNote() {
+  return {
+    orderNumber: '',
+    supplierName: '',
+    description: '',
+    actionsTaken: '',
+    followUp: '',
+  };
+}
+
+export function formatTicketNote(note) {
+  const n = note || emptyTicketNote();
+  return NOTE_FIELDS.map((field) => `${field.label}: ${n[field.key] || ''}`).join('\n');
+}
+
+export function mergeTicketNote(primary, fallback) {
+  const a = primary || {};
+  const b = fallback || emptyTicketNote();
+  const out = emptyTicketNote();
+  for (const field of NOTE_FIELDS) {
+    out[field.key] = String(a[field.key] || b[field.key] || '').trim();
+  }
+  return out;
+}
+
+function buildDescription(issue, facts, messages, hebrew) {
+  const ask = clientAsk(messages);
+  const hotel = facts.hotel ? (hebrew ? ` במלון ${facts.hotel}` : ` at ${facts.hotel}`) : '';
+  const stay = facts.stay ? (hebrew ? ` לתאריכים ${facts.stay}` : ` for ${facts.stay}`) : '';
+  if (ask) return clip(`${ask}${hotel}${stay}`, 280);
+  return clip(`${issue.label}${hotel}${stay}`, 280);
+}
+
+function buildActionsTaken(messages, facts, hebrew) {
+  const agents = messages.filter((m) => m.role === 'agent' || m.role === 'internal');
+  const hotelMsg = lastOfRole(messages, 'hotel');
+  const supplierMsg = lastOfRole(messages, 'supplier');
+  const parts = [];
+  if (agents.length) {
+    parts.push(firstSentence(agents[agents.length - 1].text, 180));
+  }
+  if (hotelMsg) {
+    parts.push(
+      hebrew
+        ? `התקבלה תשובה מהמלון: ${firstSentence(hotelMsg.text, 120)}`
+        : `Hotel replied: ${firstSentence(hotelMsg.text, 120)}`
+    );
+  } else if (supplierMsg) {
+    parts.push(
+      hebrew
+        ? `התקבלה תשובה מהספק: ${firstSentence(supplierMsg.text, 120)}`
+        : `Supplier replied: ${firstSentence(supplierMsg.text, 120)}`
+    );
+  }
+  if (!parts.length) {
+    return hebrew ? 'טרם תועדו פעולות בטיקט.' : 'No actions recorded on the ticket yet.';
+  }
+  return uniq(parts).join(' ');
+}
+
+function buildTicketNote(ticket, messages, issue, facts, hebrew, blocker) {
+  return {
+    orderNumber: facts.orderId || '',
+    supplierName: facts.channel || facts.hotel || '',
+    description: buildDescription(issue, facts, messages, hebrew),
+    actionsTaken: buildActionsTaken(messages, facts, hebrew),
+    followUp: blocker || '',
+  };
+}
+
 function partiesForDrafts(issueId, messages, waitingOn, facts) {
   const roles = new Set(messages.map((m) => m.role));
   const parties = ['client'];
@@ -594,13 +672,32 @@ function internalNote(essence, blocker) {
   return [...essence, '', 'Blocker', blocker].join('\n');
 }
 
-function hotelOrSupplierMail(party, ticket, facts, messages, issue) {
+function hotelOrSupplierMail(party, ticket, facts, messages, issue, hebrew) {
   const hotel = facts.hotel || '';
   const via = party === 'supplier' || (!hotel && facts.channel) ? facts.channel : '';
+  const complaint = detectComplaint(messages, issue);
+  if (hebrew) {
+    const order = facts.orderId ? ` הזמנה ${facts.orderId}` : ` פנייה #${ticket.id}`;
+    const stay = facts.stay ? ` (${facts.stay})` : '';
+    const guest = facts.guestFullName || facts.guestName || 'האורח';
+    const ask =
+      party === 'hotel' && issue.id === 'room'
+        ? 'נשמח לאישור אם ניתן לספק חדר עם מרפסת, או פיצוי על הפער.'
+        : 'נשמח לאישור סטטוס עדכני (זיכוי / שינוי / דחייה) כדי שנוכל לחזור ללקוח היום.';
+    const where = [hotel ? ` במלון ${hotel}` : '', via ? ` דרך ${via}` : ''].join('');
+    return [
+      'שלום,',
+      '',
+      `פונים לגבי${order}${stay}${where} עבור ${guest}.`,
+      `הלקוח דיווח על ${complaint.he}.`,
+      ask,
+      '',
+      'תודה',
+    ].join('\n');
+  }
   const order = facts.orderId ? ` reservation ${facts.orderId}` : ` ticket #${ticket.id}`;
   const stay = facts.stay ? ` (${facts.stay})` : '';
   const guest = facts.guestFullName || facts.guestName || 'the guest';
-  const complaint = detectComplaint(messages, issue);
   const ask =
     party === 'hotel' && issue.id === 'room'
       ? 'Please confirm whether a balcony room can be provided, or advise on compensation for the gap.'
@@ -625,18 +722,18 @@ function draftHint(party, facts, hebrew) {
   }
   if (party === 'hotel') {
     return hebrew
-      ? `מייל באנגלית לבירור מול ${facts.hotel || 'המלון'}:`
+      ? `מייל לבירור מול ${facts.hotel || 'המלון'}:`
       : `English email to investigate with ${facts.hotel || 'the hotel'}:`;
   }
   if (party === 'supplier') {
     return hebrew
-      ? `מייל באנגלית לבירור מול ${facts.channel || 'הספק'}:`
+      ? `מייל לבירור מול ${facts.channel || 'הספק'}:`
       : `English email to investigate with ${facts.channel || 'the supplier'}:`;
   }
   return hebrew ? 'להדבקה כ-Internal Note ב-Zendesk:' : 'Paste this as the Zendesk Internal Note:';
 }
 
-function draftFor(party, index, ticket, issue, facts, messages, essence, blocker, hebrew) {
+function draftFor(party, index, ticket, issue, facts, messages, essence, blocker, hebrew, hotelInHebrew, note) {
   const n = index + 1;
   const guest = facts.guestFullName || facts.guestName;
   const labels = {
@@ -652,19 +749,64 @@ function draftFor(party, index, ticket, issue, facts, messages, essence, blocker
     internal: hebrew ? `${n}. הערה פנימית` : `${n}. Internal note`,
   };
   let text = '';
-  if (party === 'internal') text = internalNote(essence, blocker);
+  if (party === 'internal') text = formatTicketNote(note);
   else if (party === 'client') text = clientEmail(ticket, issue, facts, messages, hebrew);
-  else text = hotelOrSupplierMail(party, ticket, facts, messages, issue);
+  else text = hotelOrSupplierMail(party, ticket, facts, messages, issue, hotelInHebrew);
   return {
     id: `local-${party}`,
     party,
     label: labels[party],
-    hint: draftHint(party, facts, hebrew),
+    hint: draftHint(party, facts, party === 'client' || party === 'internal' ? hebrew : hotelInHebrew),
     text,
   };
 }
 
-export function summarizeTicket(ticket) {
+function phraseRewriteToHebrew(text) {
+  const lines = String(text || '')
+    .split('\n')
+    .map((line) => {
+      const trimmed = line.trim();
+      if (!trimmed) return '';
+      const pairs = [
+        [/^Hello,?$/i, 'שלום,'],
+        [/^Hi,?$/i, 'היי,'],
+        [/^Dear\s+(.+),?$/i, 'שלום $1,'],
+        [/^Thank you\.?$/i, 'תודה'],
+        [/^Thanks\.?$/i, 'תודה'],
+        [/^Regards,?$/i, 'בברכה,'],
+        [/^Best regards,?$/i, 'בברכה,'],
+        [/^We are writing about/i, 'פונים לגבי'],
+        [/^Following up on/i, 'בהמשך ל'],
+        [/^The guest reported /i, 'הלקוח דיווח על '],
+        [/^Please confirm current status \(refund \/ change \/ decline\) so we can update the guest today\.$/i,
+          'נשמח לאישור סטטוס עדכני (זיכוי / שינוי / דחייה) כדי שנוכל לחזור ללקוח היום.'],
+        [/^Please confirm whether a balcony room can be provided, or advise on compensation for the gap\.$/i,
+          'נשמח לאישור אם ניתן לספק חדר עם מרפסת, או פיצוי על הפער.'],
+        [/^I will update you as soon as I have an answer\.$/i, 'אחזור אליך ברגע שיש תשובה.'],
+        [/^I will update you as soon as I have confirmation\.$/i, 'אחזור אליך ברגע שיש אישור.'],
+        [/^Thank you for writing — I am on this now/i, 'תודה על הפנייה — אני מטפל בזה עכשיו'],
+        [/^Blocker$/i, 'חוסם'],
+      ];
+      for (const [from, to] of pairs) {
+        if (from.test(trimmed)) return trimmed.replace(from, to);
+      }
+      return line;
+    });
+  return lines.join('\n').trim();
+}
+
+export function rewriteDraftToHebrew(text, { party, ticket } = {}) {
+  const src = String(text || '').trim();
+  if (!src) return '';
+  if (ticket && party) {
+    const generated = summarizeTicket(ticket, { forceHebrew: true });
+    const match = (generated.drafts || []).find((d) => d.party === party);
+    if (match && match.text) return match.text;
+  }
+  return phraseRewriteToHebrew(src);
+}
+
+export function summarizeTicket(ticket, { forceHebrew = false } = {}) {
   const raw = Array.isArray(ticket.messages) ? ticket.messages : [];
   const internalAuthors = new Set(
     raw
@@ -682,7 +824,8 @@ export function summarizeTicket(ticket) {
     })
     .filter((m) => m.text && m.text.length > 8);
 
-  const hebrew = hasHebrew([ticket.subject, ...messages.map((m) => m.text)].join('\n'));
+  const hebrew = Boolean(forceHebrew) || hasHebrew([ticket.subject, ...messages.map((m) => m.text)].join('\n'));
+  const hotelInHebrew = Boolean(forceHebrew);
   const issue = inferIssue(ticket, messages, hebrew);
   const facts = extractFacts(ticket, messages);
   const waitingOn = inferWaitingOn(messages, issue.id, facts);
@@ -690,6 +833,7 @@ export function summarizeTicket(ticket) {
   const blocker = inferBlocker(waitingOn, issue, facts, hebrew);
   const thinking = buildThinking(issue, facts, waitingOn, hebrew);
   const parties = partiesForDrafts(issue.id, messages, waitingOn, facts);
+  const note = buildTicketNote(ticket, messages, issue, facts, hebrew, blocker);
 
   return {
     summary: {
@@ -702,9 +846,10 @@ export function summarizeTicket(ticket) {
       waitingOn,
       urgency: inferUrgency(issue.id, messages, hebrew),
       thinking,
+      note,
     },
     drafts: parties.map((party, index) =>
-      draftFor(party, index, ticket, issue, facts, messages, essence, blocker, hebrew)
+      draftFor(party, index, ticket, issue, facts, messages, essence, blocker, hebrew, hotelInHebrew, note)
     ),
   };
 }

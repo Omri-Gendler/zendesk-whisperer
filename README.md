@@ -52,6 +52,10 @@ Open Options to see whether Nano is available, or to point at local Ollama (`htt
 
 ## Load unpacked (local testing)
 
+From this folder you can run **`npm start`**. That opens Chrome with the extension already loaded. There is no local website — this is not a Node app.
+
+Or load it yourself:
+
 1. Open Chrome and go to `chrome://extensions`.
 2. Turn on **Developer mode** (top right).
 3. Click **Load unpacked** and select this folder:
