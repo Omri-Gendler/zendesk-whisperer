@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Arbitrip Copilot</title>
+    <link rel="stylesheet" href="sidepanel.css" />
+  </head>
+  <body>
+    <div class="copilot">
+      <header class="copilot__brand">
+        <span class="copilot__spark" aria-hidden="true">✦</span>
+        <h1>AI Copilot</h1>
+        <span class="copilot__badge" id="source-badge">On this computer</span>
+      </header>
+
+      <div id="page-banner" class="banner" hidden></div>
+
+      <details class="card preview" id="preview">
+        <summary class="preview__summary">
+          <span>Extracted from this ticket</span>
+          <span class="preview__hint" id="preview-hint">Nothing read yet</span>
+        </summary>
+        <div class="preview__body" id="preview-body">
+          <p class="muted">Open a Zendesk ticket to see what will be summarized on this computer.</p>
+        </div>
+      </details>
+
+      <section class="card" id="summary-card">
+        <div class="card__header">
+          <h2>Copilot</h2>
+          <button type="button" class="btn btn--ghost btn--small" id="generate-btn" disabled>
+            Generate
+          </button>
+        </div>
+        <div id="summary-body">
+          <div class="card__empty">Generate to get ready-to-send messages for this ticket.</div>
+        </div>
+        <div id="drafts-body"></div>
+      </section>
+    </div>
+    <script type="module" src="sidepanel.js"></script>
+  </body>
+</html>

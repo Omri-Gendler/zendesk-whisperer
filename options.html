@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Arbitrip Copilot — Options</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="brand">
+        <span class="brand__spark" aria-hidden="true">✦</span>
+        <h1>Arbitrip Copilot</h1>
+      </header>
+      <p class="lede">
+        Summaries run <strong>only on this computer</strong>. Ticket text is never sent to OpenAI,
+        Gemini in the cloud, or any other public AI host.
+      </p>
+
+      <form id="options-form" class="card">
+        <label class="check">
+          <input type="checkbox" id="use-chrome-ai" checked />
+          Use Chrome’s on-device model (Gemini Nano)
+        </label>
+        <p class="hint">
+          Runs inside Chrome. First Generate may download the model (a few GB, once). Needs a
+          recent desktop Chrome and enough RAM/disk. Check
+          <code>chrome://on-device-internals</code>.
+        </p>
+        <p id="chrome-ai-status" class="model-status">Checking on-device model…</p>
+
+        <label for="ollama-url">Ollama URL (optional, this computer only)</label>
+        <input
+          id="ollama-url"
+          name="ollamaUrl"
+          type="url"
+          inputmode="url"
+          placeholder="http://127.0.0.1:11434"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <p class="hint">
+          Leave empty unless Ollama is installed. Must be <code>localhost</code> or
+          <code>127.0.0.1</code> — remote URLs are rejected so the ticket cannot leave the machine.
+          Example: install <a href="https://ollama.com" target="_blank" rel="noreferrer">Ollama</a>,
+          then <code>ollama pull llama3.1</code> and <code>ollama serve</code>.
+        </p>
+
+        <label for="ollama-model">Ollama model</label>
+        <input id="ollama-model" name="ollamaModel" type="text" value="llama3.1" spellcheck="false" />
+        <p class="hint">Used only when the Ollama URL above is set.</p>
+
+        <div class="actions">
+          <button type="submit" class="btn btn--primary">Save</button>
+          <button type="button" class="btn btn--outline" id="test-btn">Test local models</button>
+        </div>
+
+        <p id="status" class="status" role="status" hidden></p>
+      </form>
+    </main>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

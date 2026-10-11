@@ -1,0 +1,13 @@
+{
+  "name": "zendesk-copilot-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Optional local backend for the Arbitrip Zendesk Copilot. Summarizes on this machine — no API key, no public AI hosts.",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+}
