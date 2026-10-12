@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Arbitrip Copilot - Options</title>
+    <link rel="stylesheet" href="../../style/options.css" />
+  </head>
+  <body>
+    <h1>Arbitrip Copilot</h1>
+    <p>Generate runs only on this computer. Ticket text is never sent to a cloud AI.</p>
+
+    <form id="options-form">
+      <label>
+        <input type="checkbox" id="use-chrome-ai" />
+        Use Chrome's built-in AI (Gemini Nano)
+      </label>
+      <p class="hint">Works best in English. Turn it off for Hebrew tickets and use Ollama instead.</p>
+
+      <label for="ollama-model">Ollama model</label>
+      <input id="ollama-model" type="text" />
+      <p class="hint">Ollama has to run on this computer at http://127.0.0.1:11434.</p>
+
+      <button type="submit">Save</button>
+      <button type="button" id="test-btn">Test Ollama</button>
+      <p id="status"></p>
+    </form>
+
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

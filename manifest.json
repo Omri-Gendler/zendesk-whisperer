@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "Arbitrip Zendesk Copilot",
+  "version": "0.1.0",
+  "description": "Side panel for Zendesk that summarizes the open ticket and drafts replies on this computer.",
+  "minimum_chrome_version": "114",
+  "permissions": ["sidePanel", "storage"],
+  "host_permissions": [
+    "https://arbitrip-support.zendesk.com/*",
+    "http://127.0.0.1:11434/*"
+  ],
+  "background": {
+    "service_worker": "cmps/background/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://arbitrip-support.zendesk.com/*"],
+      "js": [
+        "cmps/ticket-reader/helpers.js",
+        "cmps/ticket-reader/extract.js",
+        "cmps/ticket-reader/content-script.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "side_panel": {
+    "default_path": "cmps/sidepanel/sidepanel.html"
+  },
+  "options_page": "cmps/options/options.html",
+  "action": {
+    "default_title": "Arbitrip Copilot",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
