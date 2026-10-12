@@ -1,109 +1,119 @@
 # Zendesk Whisperer
 
-**קופיילוט מקומי לסוכני Arbitrip ב-Zendesk.**  
-קורא את הטיקט הפתוח מהמסך, ומחזיר סיכום + טיוטות מוכנות להעתקה — בלי לשלוח את השיחה לענן.
+**On-device copilot for Arbitrip agents in Zendesk.**  
+Reads the open ticket from the page and returns a summary plus copy-ready drafts — without sending the thread to the cloud.
 
-[מצגת להנהלה](docs/pitch.html) · פנימי בלבד · לא Zendesk App · לא Web Store
+[Leadership pitch](docs/pitch.html) · Internal only · Not a Zendesk App · Not Chrome Web Store
 
 ---
 
-## הבעיה
+## The problem
 
-סוכן פותח טיקט ארוך: לקוח, מלון, ספק, הערות פנימיות. הוא צריך להבין מה הלקוח רוצה, מה כבר נעשה, ומה חוסם — ואז לכתוב תשובה בעברית ללקוח ומייל באנגלית למלון.
+An agent opens a long ticket: guest, hotel, supplier, internal notes. They need to know what the guest wants, what already happened, and what is blocking — then write Hebrew to the customer and English to the hotel.
 
-זה עולה זמן, והטון לא אחיד.
+That costs time. Tone is inconsistent.
 
-## מה Whisperer עושה
+## What Whisperer does
 
-הסוכן נשאר ב-Zendesk. לוחץ על אייקון התוסף. מקבל פאנל צד.
+The agent stays in Zendesk, clicks the extension icon, and gets a side panel.
 
-| הסוכן מקבל | למה זה חשוב |
+| The agent gets | Why it matters |
 | --- | --- |
-| **סיכום** בפורמט הערה פנימית | מספר הזמנה, ספק, תיאור, פעולות, המשך טיפול — מוכן להדבקה |
-| **טיוטה ללקוח** | עברית, אמפתית, ספציפית לטיקט הזה |
-| **טיוטה למלון / ספק** | אנגלית מקצועית |
-| **עברית לפי בחירה** | מסמנים רק לקוח / מלון / ספק / סיכום |
-| **Copy בלבד** | הסוכן מחליט מה לשלוח. Zendesk לא נכתב אוטומטית |
+| **Summary** in our internal-note format | Order id, supplier, description, actions taken, follow-up — ready to paste |
+| **Draft to the guest** | Hebrew, specific to this ticket |
+| **Draft to hotel / supplier** | Professional English |
+| **Hebrew by choice** | Mark only Guest / Hotel / Supplier / Summary |
+| **Copy only** | The agent decides what to send. Zendesk is never written automatically |
 
-## כלל הזהב: הטיקט לא יוצא מהמחשב
+## The ticket never leaves the computer
 
-אין קריאה ל-OpenAI. אין Gemini בענן. אין מפתח ספק בתוסף.
+No OpenAI. No cloud Gemini. No provider API key in the extension.
 
-Generate רץ **על המחשב של הסוכן**, בסדר הזה:
+Generate runs **on the agent’s machine**, in this order:
 
-1. מודל מובנה ב-Chrome (Gemini Nano), אם המחשב תומך  
-2. אחרת [Ollama](https://ollama.com) רק על `127.0.0.1`  
-3. אחרת כללים מובנים בתוסף — בלי רשת בכלל  
+1. Chrome’s on-device model (Gemini Nano), if the hardware supports it  
+2. Otherwise [Ollama](https://ollama.com) on `127.0.0.1` only  
+3. Otherwise built-in rules — no network at all  
 
-כתובת מרוחקת ל-Ollama **נדחית**. טקסט הטיקט לא נשלח לשרת שלנו וגם לא לספק AI ציבורי.
+A remote Ollama URL is **rejected**. Ticket text is not posted to our servers or to a public AI host.
 
-## איך זה עובד
+## How it works
 
 ```mermaid
 flowchart LR
-  Z["טיקט ב-Zendesk"] --> C["קריאה מהמסך בלבד"]
-  C --> P["פאנל צד"]
-  P --> G["Generate מקומי"]
-  G --> N["Nano / Ollama / כללים"]
-  N --> S["סיכום + טיוטות"]
-  S --> K["Copy ללוח"]
+  Z["Zendesk ticket"] --> C["Read from the page only"]
+  C --> P["Side panel"]
+  P --> G["Generate on this computer"]
+  G --> N["Nano / Ollama / rules"]
+  N --> S["Summary + drafts"]
+  S --> K["Copy"]
   K --> Z
 ```
 
-- **לא** Zendesk App ולא iframe  
-- **לא** Zendesk REST API  
-- **לא** שליחה או הדבקה אוטומטית לקומפוזר  
-- החלפת טיקט מוחקת את הסיכום הקודם — אין ערבוב בין פניות
+- **Not** a Zendesk App or iframe  
+- **Not** the Zendesk REST API  
+- **Not** auto-send or auto-insert into the composer  
+- Switching tickets clears the previous summary — no mix-up between cases
 
-## התקנה (שתי דקות)
+## Install (two minutes)
 
 1. Chrome → `chrome://extensions`  
 2. Developer mode  
-3. **Load unpacked** → התיקייה הזו  
-4. טיקט אמיתי ב-[arbitrip-support.zendesk.com](https://arbitrip-support.zendesk.com)  
-5. אייקון התוסף → **Generate** → **Copy** → הדבקה ידנית ב-Zendesk  
+3. **Load unpacked** → this folder  
+4. Open a real ticket on [arbitrip-support.zendesk.com](https://arbitrip-support.zendesk.com)  
+5. Extension icon → **Generate** → **Copy** → paste into Zendesk yourself  
 
-או מהתיקייה:
+Or from this folder:
 
 ```bash
 npm start
 ```
 
-נפתח Chrome עם התוסף טעון. אין אתר ב-localhost — זו הרחבת Chrome.
+That opens Chrome with the extension loaded. There is no localhost website — this is a Chrome extension.
 
-### Ollama (אופציונלי, אם אין Nano)
+### Ollama (optional, if Nano is unavailable)
 
 ```bash
 ollama pull llama3
 ollama serve
 ```
 
-ב-Options: `http://127.0.0.1:11434`, מודל `llama3`.
+In Options: `http://127.0.0.1:11434`, model `llama3`.
 
-## מה במכוון אין כאן
+## What we deliberately leave out
 
-- שליחה בשם הסוכן  
-- כתיבה לקומפוזר של Zendesk  
-- חיבור ל-API של Zendesk  
-- שמירת טיקטים בענן  
-- פרסום ב-Chrome Web Store  
+- Sending on the agent’s behalf  
+- Writing into the Zendesk composer  
+- Calling the Zendesk API  
+- Storing tickets in the cloud  
+- Public Chrome Web Store listing  
 
-זה כלי עזר לשיקול של הסוכן — לא אוטומציה שיכולה לשלוח משהו שגוי ללקוח.
+This is an aid for the agent’s judgment — not automation that can send the wrong thing to a guest.
 
-## מבנה קצר
+## Repo map
 
-| קובץ | תפקיד |
+| File | Role |
 | --- | --- |
-| `content-script.js` | שולף את הטיקט מהדף. `SELECTORS` למעלה אם Zendesk משנה markup |
-| `local-llm.js` | Nano → Ollama מקומי → כללים. דוחה host מרוחק |
-| `local-summarizer.js` | סיכום וטיוטות כשאין מודל |
-| `sidepanel.*` | ממשק הקופיילוט |
-| `docs/pitch.html` | מצגת להנהלה — לפתוח בדפדפן |
+| `content-script.js` | Reads the ticket from the page. Tune `SELECTORS` at the top if Zendesk markup changes |
+| `local-llm.js` | Nano → local Ollama → rules. Rejects remote hosts |
+| `local-summarizer.js` | Summary and drafts when no model is ready |
+| `sidepanel.*` | Copilot UI |
+| `docs/pitch.html` | Leadership deck — open in a browser |
 
-## התקנה ארגונית
+## Commits
 
-תוסף פנימי. אחרי פיילוט: Chrome `ExtensionInstallForcelist`, בלי חנות ציבורית.
+Notes sit next to each commit so the history reads as a product story, not a dump of file names.
+
+| Commit | Title | Note |
+| --- | --- | --- |
+| [`105bd06`](https://github.com/Omri-Gendler/zendesk-whisperer/commit/105bd0627d96d8095cc6e30d2b0a3e0a0476c529) | Restore the local copilot | First working extension: side panel on Zendesk, ticket from the DOM only, Generate on this computer (Nano / Ollama / rules). No public AI. |
+| [`d2974f1`](https://github.com/Omri-Gendler/zendesk-whisperer/commit/d2974f1ff1b1194751efe4916f118111dc72c712) | Summary template + Hebrew controls | Internal-note summary (order id, supplier, description, actions, follow-up). Mark **Guest / Hotel / Supplier / Summary** for Hebrew. Copy-only drafts. |
+| [`47e06af`](https://github.com/Omri-Gendler/zendesk-whisperer/commit/47e06af3a068393bade29c348a1549f009fcbcf6) | README and pitch | Product landing page and a short deck so the private repo can be shared internally. |
+
+## Enterprise install
+
+Internal extension. After a pilot: Chrome `ExtensionInstallForcelist`. No public store.
 
 ---
 
-*Arbitrip · EL AL Travel support · פנימי*
+*Arbitrip · EL AL Travel support · internal*

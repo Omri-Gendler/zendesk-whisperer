@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Zendesk Whisperer · מצגת</title>
+    <title>Zendesk Whisperer · Pitch</title>
     <style>
       :root {
         --navy: #1f3b57;
@@ -20,7 +20,7 @@
         height: 100%;
         background: var(--navy-deep);
         color: var(--navy);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Heebo", Arial, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Arial, sans-serif;
       }
       .deck {
         height: 100%;
@@ -44,6 +44,7 @@
         font-weight: 700;
         letter-spacing: 0.08em;
         margin: 0 0 12px;
+        text-transform: uppercase;
       }
       h1 {
         margin: 0 0 16px;
@@ -67,7 +68,7 @@
         font-size: 22px;
         max-width: 34em;
       }
-      ul { margin: 0; padding: 0 22px 0 0; }
+      ul { margin: 0; padding: 0 0 0 22px; }
       li { margin: 0 0 12px; }
       .grid {
         display: grid;
@@ -95,7 +96,7 @@
         margin-top: 28px;
         padding: 16px 18px;
         background: #fff;
-        border-right: 4px solid var(--amber);
+        border-left: 4px solid var(--amber);
         border-radius: 8px;
         color: var(--navy);
         font-size: 18px;
@@ -160,105 +161,105 @@
   <body>
     <div class="deck" id="deck">
       <section class="slide slide--cover is-on">
-        <p class="kicker">ARBITRIP · פנימי</p>
+        <p class="kicker">Arbitrip · internal</p>
         <h1>Zendesk Whisperer</h1>
         <p class="lede">
-          קופיילוט לסוכן התמיכה. קורא את הטיקט מהמסך, כותב סיכום וטיוטות —
-          בלי להוציא שיחת לקוח מהמחשב.
+          A copilot for support agents. It reads the ticket from the screen and writes
+          a summary plus drafts — without the guest thread leaving this computer.
         </p>
       </section>
 
       <section class="slide">
-        <p class="kicker">הבעיה</p>
-        <h2>טיקט ארוך. כמה נמענים. זמן יקר.</h2>
+        <p class="kicker">The problem</p>
+        <h2>Long tickets. Several parties. Expensive time.</h2>
         <ul>
-          <li>הסוכן קורא שרשור של לקוח, מלון, ספק והערות פנימיות.</li>
-          <li>צריך תשובה בעברית ללקוח ומייל באנגלית למלון — בטון אחיד.</li>
-          <li>כל דקה כאן היא דקה שלא נסגרת פנייה אחרת.</li>
+          <li>The agent reads guest, hotel, supplier, and internal notes in one thread.</li>
+          <li>They need Hebrew to the customer and English to the hotel — in a consistent tone.</li>
+          <li>Every minute here is a minute another case is not closed.</li>
         </ul>
       </section>
 
       <section class="slide">
-        <p class="kicker">המוצר במשפט</p>
-        <h2>פאנל צד ב-Chrome, מעל Zendesk שכבר עובדים בו.</h2>
+        <p class="kicker">The product in one line</p>
+        <h2>A Chrome side panel on top of the Zendesk they already use.</h2>
         <p class="lede">
-          לא אפליקציית Zendesk. לא מסך חדש. הסוכן נשאר בטיקט, לוחץ Generate,
-          ומקבל טקסט מוכן להעתקה.
+          Not a Zendesk app. Not a new screen. The agent stays on the ticket, clicks Generate,
+          and gets text ready to copy.
         </p>
       </section>
 
       <section class="slide">
-        <p class="kicker">מה הסוכן מקבל</p>
-        <h2>סיכום בפורמט שלנו, וטיוטות לפי נמען.</h2>
+        <p class="kicker">What the agent gets</p>
+        <h2>Our internal-note summary, and drafts by party.</h2>
         <div class="grid">
-          <div class="card"><strong>מספר הזמנה</strong><span>מתוך הטיקט, לא ניחוש</span></div>
-          <div class="card"><strong>שם הספק</strong><span>Expedia, Hotelbeds, מלון</span></div>
-          <div class="card"><strong>תיאור הפנייה</strong><span>מה הלקוח באמת ביקש</span></div>
-          <div class="card"><strong>פעולות שבוצעו</strong><span>מה כבר קרה בשרשור</span></div>
-          <div class="card"><strong>המשך טיפול</strong><span>מה חוסם, למי מחכים</span></div>
-          <div class="card"><strong>טיוטות</strong><span>לקוח · מלון · ספק · העתקה בלבד</span></div>
+          <div class="card"><strong>Order number</strong><span>From the ticket, not a guess</span></div>
+          <div class="card"><strong>Supplier name</strong><span>Expedia, Hotelbeds, hotel</span></div>
+          <div class="card"><strong>Issue description</strong><span>What the guest actually asked</span></div>
+          <div class="card"><strong>Actions taken</strong><span>What already happened in the thread</span></div>
+          <div class="card"><strong>Follow-up</strong><span>What is blocking, who we wait on</span></div>
+          <div class="card"><strong>Drafts</strong><span>Guest · hotel · supplier · copy only</span></div>
         </div>
       </section>
 
       <section class="slide">
-        <p class="kicker">שליטה</p>
-        <h2>עברית רק למה שצריך.</h2>
-        <p>ארבעה כפתורים. מסמנים — רואים סימון. אפשר לפני Generate.</p>
+        <p class="kicker">Control</p>
+        <h2>Hebrew only where you mark it.</h2>
+        <p>Four chips. Mark them — the selection is visible. You can mark before Generate.</p>
         <div class="flow" style="margin-top: 24px">
-          <span class="pill">לקוח</span>
-          <span class="pill">מלון</span>
-          <span class="pill">ספק</span>
-          <span class="pill">סיכום</span>
+          <span class="pill">Guest</span>
+          <span class="pill">Hotel</span>
+          <span class="pill">Supplier</span>
+          <span class="pill">Summary</span>
         </div>
-        <p class="note">ברירת מחדל: לקוח בעברית, מלון וספק באנגלית. בלי חתימת EL AL — Zendesk כבר מוסיף.</p>
+        <p class="note">Default: Hebrew to the guest, English to hotel and supplier. No EL AL footer — Zendesk already adds it.</p>
       </section>
 
       <section class="slide">
-        <p class="kicker">פרטיות</p>
-        <h2>הטיקט לא יוצא מהמחשב.</h2>
+        <p class="kicker">Privacy</p>
+        <h2>The ticket does not leave the machine.</h2>
         <ul>
-          <li>אין OpenAI. אין Gemini בענן. אין מפתח ספק בתוסף.</li>
-          <li>אין קריאת Zendesk API — רק מה שמופיע על המסך.</li>
-          <li>מודל מקומי ב-Chrome, או Ollama על המחשב, או כללים מובנים.</li>
+          <li>No OpenAI. No cloud Gemini. No provider key in the extension.</li>
+          <li>No Zendesk API — only what is on the screen.</li>
+          <li>Chrome on-device model, or Ollama on this computer, or built-in rules.</li>
         </ul>
-        <p class="note">כתובת מרוחקת למודל נדחית. זה מתאים לטיקטי לקוחות של EL AL Travel.</p>
+        <p class="note">A remote model URL is rejected. That fits EL AL Travel guest tickets.</p>
       </section>
 
       <section class="slide">
-        <p class="kicker">איך זה רץ</p>
-        <h2>מסך → פאנל → מודל מקומי → Copy.</h2>
+        <p class="kicker">How it runs</p>
+        <h2>Screen → panel → local model → Copy.</h2>
         <div class="flow">
-          <span class="pill">טיקט ב-Zendesk</span>
-          <span class="arrow">←</span>
-          <span class="pill">קריאה מהדף</span>
-          <span class="arrow">←</span>
-          <span class="pill">Generate מקומי</span>
-          <span class="arrow">←</span>
+          <span class="pill">Zendesk ticket</span>
+          <span class="arrow">→</span>
+          <span class="pill">Read from the page</span>
+          <span class="arrow">→</span>
+          <span class="pill">Generate locally</span>
+          <span class="arrow">→</span>
           <span class="pill">Copy</span>
         </div>
-        <p class="note" style="margin-top: 36px">החלפת טיקט מוחקת את הסיכום הקודם. אין ערבוב בין פניות.</p>
+        <p class="note" style="margin-top: 36px">Switching tickets clears the previous summary. No mix-up between cases.</p>
       </section>
 
       <section class="slide">
-        <p class="kicker">מה במכוון אין</p>
-        <h2>הסוכן נשאר האחראי.</h2>
+        <p class="kicker">What we leave out on purpose</p>
+        <h2>The agent stays accountable.</h2>
         <ul>
-          <li>לא שולחים בשם הסוכן.</li>
-          <li>לא כותבים לקומפוזר של Zendesk.</li>
-          <li>לא שומרים טיקטים בענן.</li>
-          <li>לא חנות Chrome ציבורית — תוסף פנימי.</li>
+          <li>We do not send on the agent’s behalf.</li>
+          <li>We do not write into the Zendesk composer.</li>
+          <li>We do not store tickets in the cloud.</li>
+          <li>No public Chrome Web Store — internal extension.</li>
         </ul>
       </section>
 
       <section class="slide">
-        <p class="kicker">הצעד הבא</p>
-        <h2>שתי דקות על טיקט חי. אחר כך פיילוט.</h2>
+        <p class="kicker">Next step</p>
+        <h2>Two minutes on a live ticket. Then a pilot.</h2>
         <ul>
-          <li>דמו משותף על פנייה אמיתית.</li>
-          <li>פיילוט עם 2–3 סוכנים.</li>
-          <li>מודדים: זמן לסיכום, האם הטיוטה נשלחת כמעט כמו שהיא.</li>
+          <li>Shared demo on a real case.</li>
+          <li>Pilot with 2–3 agents.</li>
+          <li>Measure: time to a summary, and whether the draft is sent almost as-is.</li>
         </ul>
-        <p class="note">הקוד וההתקנה: ריפו פנימי · Zendesk Whisperer</p>
+        <p class="note">Code and install: private repo · Zendesk Whisperer</p>
       </section>
     </div>
 
@@ -266,8 +267,8 @@
       <div>Zendesk Whisperer · <b id="pos">1</b> / <span id="total">9</span></div>
       <div class="dots" id="dots"></div>
       <div class="nav">
-        <button type="button" id="prev">הקודם</button>
-        <button type="button" id="next">הבא</button>
+        <button type="button" id="prev">Prev</button>
+        <button type="button" id="next">Next</button>
       </div>
     </div>
 
@@ -292,8 +293,8 @@
       document.getElementById('prev').onclick = () => go(i - 1);
       document.getElementById('next').onclick = () => go(i + 1);
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft' || e.key === ' ') { e.preventDefault(); go(i + 1); }
-        if (e.key === 'ArrowRight') go(i - 1);
+        if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(i + 1); }
+        if (e.key === 'ArrowLeft') go(i - 1);
       });
       go(0);
     </script>
