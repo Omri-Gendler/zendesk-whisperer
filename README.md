@@ -88,7 +88,7 @@ In Options: `http://127.0.0.1:11434`, model `llama3`.
 - Storing tickets in the cloud  
 - Public Chrome Web Store listing  
 
-This is an aid for the agent’s judgment — not automation that can send the wrong thing to a guest.
+This is an aid for the agent’s judgment, not automation that can send the wrong thing to a guest.
 
 ## Repo map
 
