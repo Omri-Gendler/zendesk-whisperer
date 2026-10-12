@@ -108,7 +108,8 @@ Notes sit next to each commit so the history reads as a product story, not a dum
 | --- | --- | --- |
 | [`105bd06`](https://github.com/Omri-Gendler/zendesk-whisperer/commit/105bd0627d96d8095cc6e30d2b0a3e0a0476c529) | Restore the local copilot | First working extension: side panel on Zendesk, ticket from the DOM only, Generate on this computer (Nano / Ollama / rules). No public AI. |
 | [`d2974f1`](https://github.com/Omri-Gendler/zendesk-whisperer/commit/d2974f1ff1b1194751efe4916f118111dc72c712) | Summary template + Hebrew controls | Internal-note summary (order id, supplier, description, actions, follow-up). Mark **Guest / Hotel / Supplier / Summary** for Hebrew. Copy-only drafts. |
-| [`47e06af`](https://github.com/Omri-Gendler/zendesk-whisperer/commit/47e06af3a068393bade29c348a1549f009fcbcf6) | README and pitch | Product landing page and a short deck so the private repo can be shared internally. |
+| [`47e06af`](https://github.com/Omri-Gendler/zendesk-whisperer/commit/47e06af3a068393bade29c348a1549f009fcbcf6) | README and pitch | First product landing page and leadership deck (Hebrew). Replaced by the English page below. |
+| [`a1518ba`](https://github.com/Omri-Gendler/zendesk-whisperer/commit/a1518ba5b32ea932b09592f57c5221c4d0d5512c) | English GitHub + commit notes | README and pitch in English. Each commit has a note beside it so the history is readable. |
 
 ## Enterprise install
 
