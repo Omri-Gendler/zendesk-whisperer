@@ -69,7 +69,7 @@ Or from this folder:
 npm start
 ```
 
-That opens Chrome with the extension loaded. There is no localhost website — this is a Chrome extension.
+That opens Chrome with the extension loaded. There is no localhost website this is a Chrome extension.
 
 ### Ollama (optional, if Nano is unavailable)
 
