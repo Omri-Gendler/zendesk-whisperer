@@ -19,7 +19,7 @@ The agent stays in Zendesk, clicks the extension icon, and gets a side panel.
 
 | The agent gets | Why it matters |
 | --- | --- |
-| **Summary** in our internal-note format | Order id, supplier, description, actions taken, follow-up — ready to paste |
+| **Summary** in our internal-note format | Order id, supplier, description, actions taken, follow-up ready to paste |
 | **Draft to the guest** | Hebrew, specific to this ticket |
 | **Draft to hotel / supplier** | Professional English |
 | **Hebrew by choice** | Mark only Guest / Hotel / Supplier / Summary |
@@ -33,7 +33,7 @@ Generate runs **on the agent’s machine**, in this order:
 
 1. Chrome’s on-device model (Gemini Nano), if the hardware supports it  
 2. Otherwise [Ollama](https://ollama.com) on `127.0.0.1` only  
-3. Otherwise built-in rules — no network at all  
+3. Otherwise built-in rules. no network at all  
 
 A remote Ollama URL is **rejected**. Ticket text is not posted to our servers or to a public AI host.
 
