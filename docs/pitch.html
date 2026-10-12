@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Zendesk Whisperer · מצגת</title>
+    <style>
+      :root {
+        --navy: #1f3b57;
+        --navy-deep: #152536;
+        --amber: #c97b2e;
+        --cream: #fbf8f4;
+        --line: #d5dee8;
+        --muted: #5b6b7c;
+        --white: #ffffff;
+      }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        height: 100%;
+        background: var(--navy-deep);
+        color: var(--navy);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Heebo", Arial, sans-serif;
+      }
+      .deck {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      .slide {
+        display: none;
+        flex: 1;
+        padding: 56px 72px 88px;
+        background: var(--cream);
+      }
+      .slide.is-on { display: flex; flex-direction: column; justify-content: center; }
+      .slide--cover {
+        background: var(--navy);
+        color: var(--white);
+      }
+      .kicker {
+        color: var(--amber);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        margin: 0 0 12px;
+      }
+      h1 {
+        margin: 0 0 16px;
+        font-size: 42px;
+        line-height: 1.2;
+        font-weight: 700;
+      }
+      .slide--cover h1 { font-size: 48px; }
+      h2 {
+        margin: 0 0 28px;
+        font-size: 32px;
+        line-height: 1.25;
+      }
+      p, li {
+        font-size: 20px;
+        line-height: 1.5;
+        color: var(--muted);
+      }
+      .slide--cover p { color: #d5e0ea; max-width: 36em; }
+      .lede {
+        font-size: 22px;
+        max-width: 34em;
+      }
+      ul { margin: 0; padding: 0 22px 0 0; }
+      li { margin: 0 0 12px; }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .card {
+        background: var(--white);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 18px 20px;
+      }
+      .card strong {
+        display: block;
+        color: var(--navy);
+        font-size: 16px;
+        margin-bottom: 6px;
+      }
+      .card span {
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.45;
+      }
+      .note {
+        margin-top: 28px;
+        padding: 16px 18px;
+        background: #fff;
+        border-right: 4px solid var(--amber);
+        border-radius: 8px;
+        color: var(--navy);
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .flow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+      }
+      .pill {
+        background: var(--white);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--navy);
+      }
+      .arrow { color: var(--amber); font-weight: 700; }
+      .bar {
+        position: fixed;
+        inset-inline: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px 28px;
+        background: var(--navy-deep);
+        color: #9aafc2;
+        font-size: 13px;
+      }
+      .bar b { color: #fff; }
+      .dots { display: flex; gap: 6px; }
+      .dots button {
+        width: 8px;
+        height: 8px;
+        padding: 0;
+        border: 0;
+        border-radius: 99px;
+        background: #3d556c;
+        cursor: pointer;
+      }
+      .dots button.is-on { background: var(--amber); width: 18px; }
+      .nav button {
+        background: transparent;
+        border: 1px solid #3d556c;
+        color: #fff;
+        border-radius: 8px;
+        padding: 6px 12px;
+        cursor: pointer;
+        font: inherit;
+      }
+      @media print {
+        .bar { display: none; }
+        .slide { display: flex !important; break-after: page; min-height: 100vh; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="deck" id="deck">
+      <section class="slide slide--cover is-on">
+        <p class="kicker">ARBITRIP · פנימי</p>
+        <h1>Zendesk Whisperer</h1>
+        <p class="lede">
+          קופיילוט לסוכן התמיכה. קורא את הטיקט מהמסך, כותב סיכום וטיוטות —
+          בלי להוציא שיחת לקוח מהמחשב.
+        </p>
+      </section>
+
+      <section class="slide">
+        <p class="kicker">הבעיה</p>
+        <h2>טיקט ארוך. כמה נמענים. זמן יקר.</h2>
+        <ul>
+          <li>הסוכן קורא שרשור של לקוח, מלון, ספק והערות פנימיות.</li>
+          <li>צריך תשובה בעברית ללקוח ומייל באנגלית למלון — בטון אחיד.</li>
+          <li>כל דקה כאן היא דקה שלא נסגרת פנייה אחרת.</li>
+        </ul>
+      </section>
+
+      <section class="slide">
+        <p class="kicker">המוצר במשפט</p>
+        <h2>פאנל צד ב-Chrome, מעל Zendesk שכבר עובדים בו.</h2>
+        <p class="lede">
+          לא אפליקציית Zendesk. לא מסך חדש. הסוכן נשאר בטיקט, לוחץ Generate,
+          ומקבל טקסט מוכן להעתקה.
+        </p>
+      </section>
+
+      <section class="slide">
+        <p class="kicker">מה הסוכן מקבל</p>
+        <h2>סיכום בפורמט שלנו, וטיוטות לפי נמען.</h2>
+        <div class="grid">
+          <div class="card"><strong>מספר הזמנה</strong><span>מתוך הטיקט, לא ניחוש</span></div>
+          <div class="card"><strong>שם הספק</strong><span>Expedia, Hotelbeds, מלון</span></div>
+          <div class="card"><strong>תיאור הפנייה</strong><span>מה הלקוח באמת ביקש</span></div>
+          <div class="card"><strong>פעולות שבוצעו</strong><span>מה כבר קרה בשרשור</span></div>
+          <div class="card"><strong>המשך טיפול</strong><span>מה חוסם, למי מחכים</span></div>
+          <div class="card"><strong>טיוטות</strong><span>לקוח · מלון · ספק · העתקה בלבד</span></div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <p class="kicker">שליטה</p>
+        <h2>עברית רק למה שצריך.</h2>
+        <p>ארבעה כפתורים. מסמנים — רואים סימון. אפשר לפני Generate.</p>
+        <div class="flow" style="margin-top: 24px">
+          <span class="pill">לקוח</span>
+          <span class="pill">מלון</span>
+          <span class="pill">ספק</span>
+          <span class="pill">סיכום</span>
+        </div>
+        <p class="note">ברירת מחדל: לקוח בעברית, מלון וספק באנגלית. בלי חתימת EL AL — Zendesk כבר מוסיף.</p>
+      </section>
+
+      <section class="slide">
+        <p class="kicker">פרטיות</p>
+        <h2>הטיקט לא יוצא מהמחשב.</h2>
+        <ul>
+          <li>אין OpenAI. אין Gemini בענן. אין מפתח ספק בתוסף.</li>
+          <li>אין קריאת Zendesk API — רק מה שמופיע על המסך.</li>
+          <li>מודל מקומי ב-Chrome, או Ollama על המחשב, או כללים מובנים.</li>
+        </ul>
+        <p class="note">כתובת מרוחקת למודל נדחית. זה מתאים לטיקטי לקוחות של EL AL Travel.</p>
+      </section>
+
+      <section class="slide">
+        <p class="kicker">איך זה רץ</p>
+        <h2>מסך → פאנל → מודל מקומי → Copy.</h2>
+        <div class="flow">
+          <span class="pill">טיקט ב-Zendesk</span>
+          <span class="arrow">←</span>
+          <span class="pill">קריאה מהדף</span>
+          <span class="arrow">←</span>
+          <span class="pill">Generate מקומי</span>
+          <span class="arrow">←</span>
+          <span class="pill">Copy</span>
+        </div>
+        <p class="note" style="margin-top: 36px">החלפת טיקט מוחקת את הסיכום הקודם. אין ערבוב בין פניות.</p>
+      </section>
+
+      <section class="slide">
+        <p class="kicker">מה במכוון אין</p>
+        <h2>הסוכן נשאר האחראי.</h2>
+        <ul>
+          <li>לא שולחים בשם הסוכן.</li>
+          <li>לא כותבים לקומפוזר של Zendesk.</li>
+          <li>לא שומרים טיקטים בענן.</li>
+          <li>לא חנות Chrome ציבורית — תוסף פנימי.</li>
+        </ul>
+      </section>
+
+      <section class="slide">
+        <p class="kicker">הצעד הבא</p>
+        <h2>שתי דקות על טיקט חי. אחר כך פיילוט.</h2>
+        <ul>
+          <li>דמו משותף על פנייה אמיתית.</li>
+          <li>פיילוט עם 2–3 סוכנים.</li>
+          <li>מודדים: זמן לסיכום, האם הטיוטה נשלחת כמעט כמו שהיא.</li>
+        </ul>
+        <p class="note">הקוד וההתקנה: ריפו פנימי · Zendesk Whisperer</p>
+      </section>
+    </div>
+
+    <div class="bar">
+      <div>Zendesk Whisperer · <b id="pos">1</b> / <span id="total">9</span></div>
+      <div class="dots" id="dots"></div>
+      <div class="nav">
+        <button type="button" id="prev">הקודם</button>
+        <button type="button" id="next">הבא</button>
+      </div>
+    </div>
+
+    <script>
+      const slides = [...document.querySelectorAll('.slide')];
+      const dots = document.getElementById('dots');
+      const pos = document.getElementById('pos');
+      document.getElementById('total').textContent = String(slides.length);
+      let i = 0;
+      slides.forEach((_, idx) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.addEventListener('click', () => go(idx));
+        dots.appendChild(b);
+      });
+      function go(n) {
+        i = Math.max(0, Math.min(slides.length - 1, n));
+        slides.forEach((s, idx) => s.classList.toggle('is-on', idx === i));
+        [...dots.children].forEach((d, idx) => d.classList.toggle('is-on', idx === i));
+        pos.textContent = String(i + 1);
+      }
+      document.getElementById('prev').onclick = () => go(i - 1);
+      document.getElementById('next').onclick = () => go(i + 1);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft' || e.key === ' ') { e.preventDefault(); go(i + 1); }
+        if (e.key === 'ArrowRight') go(i - 1);
+      });
+      go(0);
+    </script>
+  </body>
+</html>
