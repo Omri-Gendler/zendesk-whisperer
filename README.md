@@ -90,31 +90,4 @@ In Options: `http://127.0.0.1:11434`, model `llama3`.
 
 This is an aid for the agent’s judgment, not automation that can send the wrong thing to a guest.
 
-## Repo map
 
-| File | Role |
-| --- | --- |
-| `content-script.js` | Reads the ticket from the page. Tune `SELECTORS` at the top if Zendesk markup changes |
-| `local-llm.js` | Nano → local Ollama → rules. Rejects remote hosts |
-| `local-summarizer.js` | Summary and drafts when no model is ready |
-| `sidepanel.*` | Copilot UI |
-| `docs/pitch.html` | Leadership deck — open in a browser |
-
-## Commits
-
-Notes sit next to each commit so the history reads as a product story, not a dump of file names.
-
-| Commit | Title | Note |
-| --- | --- | --- |
-| [`105bd06`](https://github.com/Omri-Gendler/zendesk-whisperer/commit/105bd0627d96d8095cc6e30d2b0a3e0a0476c529) | Restore the local copilot | First working extension: side panel on Zendesk, ticket from the DOM only, Generate on this computer (Nano / Ollama / rules). No public AI. |
-| [`d2974f1`](https://github.com/Omri-Gendler/zendesk-whisperer/commit/d2974f1ff1b1194751efe4916f118111dc72c712) | Summary template + Hebrew controls | Internal-note summary (order id, supplier, description, actions, follow-up). Mark **Guest / Hotel / Supplier / Summary** for Hebrew. Copy-only drafts. |
-| [`47e06af`](https://github.com/Omri-Gendler/zendesk-whisperer/commit/47e06af3a068393bade29c348a1549f009fcbcf6) | README and pitch | First product landing page and leadership deck (Hebrew). Replaced by the English page below. |
-| [`a1518ba`](https://github.com/Omri-Gendler/zendesk-whisperer/commit/a1518ba5b32ea932b09592f57c5221c4d0d5512c) | English GitHub + commit notes | README and pitch in English. Each commit has a note beside it so the history is readable. |
-
-## Enterprise install
-
-Internal extension. After a pilot: Chrome `ExtensionInstallForcelist`. No public store.
-
----
-
-*Arbitrip · EL AL Travel support · internal*
