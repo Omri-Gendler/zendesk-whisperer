@@ -93,12 +93,9 @@ This is an aid for the agent’s judgment, not automation that can send the wron
 ## Repo map
 
 ```
-cmps/ticket-reader/   read the ticket from the Zendesk page (tune SELECTORS at the top)
+cmps/ticket-reader/   one small file per step of reading the Zendesk page
 cmps/background/      open the side panel and pass the ticket through
-cmps/copilot/local.js only localhost / 127.0.0.1 — remote URLs are rejected
-cmps/copilot/generate.js  Chrome Nano → local Ollama → rules
-cmps/copilot/hebrew.js    Hebrew per section (guest / hotel / supplier / summary)
-cmps/copilot/summarizer.js  internal-note fields + drafts when no model is ready
+cmps/copilot/         Generate on this computer (Nano / Ollama / rules) + Hebrew
 cmps/sidepanel/       the panel the agent sees
 cmps/options/         local-model settings
 style/                CSS only

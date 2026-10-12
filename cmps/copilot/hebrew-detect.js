@@ -1,0 +1,3 @@
+export function hasHebrew(text) {
+  return /[\u0590-\u05FF]/.test(text || '');
+}
