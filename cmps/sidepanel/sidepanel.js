@@ -3,8 +3,9 @@
  * Side panel UI. Copy-to-clipboard only — never writes into Zendesk.
  */
 
-import { generateOnDevice, rewriteSummaryToHebrew, rewriteToHebrew } from './local-llm.js';
-import { formatTicketNote, hasHebrew, NOTE_FIELDS } from './local-summarizer.js';
+import { generateOnDevice } from '../copilot/generate.js';
+import { rewriteSummaryToHebrew, rewriteToHebrew } from '../copilot/hebrew.js';
+import { formatTicketNote, hasHebrew, NOTE_FIELDS } from '../copilot/summarizer.js';
 
 const PORT_NAME = 'sidepanel';
 const PARTY_ORDER = ['client', 'hotel', 'supplier', 'internal'];
@@ -271,7 +272,7 @@ function renderSummary() {
 
   els.summaryBody.innerHTML = `
     <div class="ticket-note-wrap">
-      <div class="suggestion__header">
+      <div class="draft-header">
         <h3 class="draft-title">סיכום</h3>
         ${copyButton('summary-note')}
       </div>
@@ -304,8 +305,8 @@ function renderDrafts() {
         ? `<p class="draft-hint" dir="auto">${escapeHtml(d.hint)}</p>`
         : '';
       return `
-        <article class="gemini-draft party--${escapeHtml(d.party)}">
-          <div class="suggestion__header">
+        <article class="draft party--${escapeHtml(d.party)}">
+          <div class="draft-header">
             <h3 class="draft-title">${escapeHtml(d.label || PARTY_LABEL[d.party])}</h3>
             ${copyButton(d.id)}
           </div>

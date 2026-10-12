@@ -5,7 +5,6 @@
   "description": "Chrome extension. npm start opens Chrome with this folder loaded unpacked.",
   "type": "module",
   "scripts": {
-    "start": "node start.mjs",
-    "backend": "npm start --prefix backend"
+    "start": "node start.mjs"
   }
 }

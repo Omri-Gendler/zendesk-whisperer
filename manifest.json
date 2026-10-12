@@ -15,20 +15,20 @@
     "http://127.0.0.1/*"
   ],
   "background": {
-    "service_worker": "background.js",
+    "service_worker": "cmps/background/background.js",
     "type": "module"
   },
   "content_scripts": [
     {
       "matches": ["https://arbitrip-support.zendesk.com/*"],
-      "js": ["content-script.js"],
+      "js": ["cmps/ticket-reader/content-script.js"],
       "run_at": "document_idle"
     }
   ],
   "side_panel": {
-    "default_path": "sidepanel.html"
+    "default_path": "cmps/sidepanel/sidepanel.html"
   },
-  "options_page": "options.html",
+  "options_page": "cmps/options/options.html",
   "action": {
     "default_title": "Arbitrip Copilot",
     "default_icon": {

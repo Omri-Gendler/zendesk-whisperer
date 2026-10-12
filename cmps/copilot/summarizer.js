@@ -1,7 +1,5 @@
 /**
- * On-device ticket summary. No network. No OpenAI.
- * Writes a short essence of the ticket + copy-paste drafts —
- * not a dated event log.
+ * On-device fallback: no network. Builds the internal note + copy-paste drafts.
  */
 
 const ISSUE_TYPES = [
@@ -311,34 +309,6 @@ function inferWaitingOn(messages, issueId, facts) {
   return 'internal';
 }
 
-function inferUrgency(issueId, messages, hebrew) {
-  const blob = messages.map((m) => m.text).join('\n').toLowerCase();
-  if (/update is required|reopened|דחוף|asap|urgent/.test(blob)) {
-    return hebrew ? 'גבוה — הכרטיס נפתח מחדש למעקב' : 'High — ticket reopened for follow-up';
-  }
-  if (issueId === 'late-arrival') {
-    return hebrew ? 'גבוה — תאריכי שהייה רגישים לזמן' : 'High — time-sensitive stay dates';
-  }
-  if (issueId === 'points' || issueId === 'rate') {
-    return hebrew ? 'בינוני — כסף / נקודות ממתינים לבירור' : 'Medium — money or points pending confirmation';
-  }
-  if (issueId === 'cancellation') {
-    return hebrew ? 'בינוני — נדרש אישור מדיניות' : 'Medium — policy confirmation needed';
-  }
-  return hebrew ? 'רגיל' : 'Normal';
-}
-
-function idsSnippet(facts, hebrew) {
-  const bits = [];
-  if (facts.hotel) bits.push(facts.hotel);
-  if (facts.payment) bits.push(hebrew ? `תשלום ${facts.payment}` : `paid with ${facts.payment}`);
-  if (facts.stay) bits.push(facts.stay);
-  if (facts.itinerary) bits.push(`itinerary ${facts.itinerary}`);
-  if (facts.orderId) bits.push(hebrew ? `הזמנה ${facts.orderId}` : `order ${facts.orderId}`);
-  if (facts.points) bits.push(hebrew ? `${facts.points} נקודות` : `${facts.points} points`);
-  return bits;
-}
-
 function lastOfRole(messages, role) {
   return [...messages].reverse().find((m) => m.role === role) || null;
 }
@@ -352,63 +322,6 @@ function clientAsk(messages) {
     .replace(/\s+/g, ' ')
     .trim();
   return firstSentence(text, 180);
-}
-
-function askAddsNewInfo(ask, facts, firstLine) {
-  if (!ask || ask.length < 12) return false;
-  const blob = [firstLine, facts.hotel, facts.orderId, facts.itinerary, facts.points, facts.stay]
-    .filter(Boolean)
-    .join(' ')
-    .toLowerCase();
-  const words = ask.split(/\s+/).filter((w) => w.length > 3);
-  const novel = words.filter((w) => !blob.includes(w.toLowerCase()));
-  return novel.length >= 2;
-}
-
-function synthesizeEssence(messages, issue, facts, hebrew) {
-  const bits = idsSnippet(facts, hebrew);
-  const bitStr = bits.length ? ` (${bits.join(', ')})` : '';
-  const ask = clientAsk(messages);
-  const hotelMsg = lastOfRole(messages, 'hotel');
-  const supplierMsg = lastOfRole(messages, 'supplier');
-  const lines = [];
-
-  const want =
-    issue.id === 'room'
-      ? hebrew
-        ? 'טיפול בפער בין ההזמנה לחדר'
-        : 'help with a room / amenities mismatch'
-      : issue.label;
-  const first = hebrew
-    ? `הלקוח מבקש ${want}${bitStr}.`
-    : `The customer wants ${want}${bitStr}.`;
-  lines.push(first);
-
-  if (askAddsNewInfo(ask, facts, first)) {
-    lines.push(hebrew ? `עיקר הפנייה: ${ask}` : `Main ask: ${ask}`);
-  }
-
-  if (hebrew) {
-    if (facts.refused && facts.hotel) {
-      lines.push('המלון סירב לזיכוי או לשינוי.');
-    } else if (hotelMsg) {
-      lines.push(`תשובת המלון: ${firstSentence(hotelMsg.text, 140)}`);
-    } else if (facts.channel) {
-      lines.push(`הטיפול מול ${facts.channel}.`);
-    } else if (supplierMsg) {
-      lines.push(`תשובת הספק: ${firstSentence(supplierMsg.text, 140)}`);
-    }
-  } else if (facts.refused && facts.hotel) {
-    lines.push('The hotel refused a refund or a change.');
-  } else if (hotelMsg) {
-    lines.push(`Hotel response: ${firstSentence(hotelMsg.text, 140)}`);
-  } else if (facts.channel) {
-    lines.push(`Handled via ${facts.channel}.`);
-  } else if (supplierMsg) {
-    lines.push(`Supplier response: ${firstSentence(supplierMsg.text, 140)}`);
-  }
-
-  return uniq(lines).slice(0, 4);
 }
 
 function inferBlocker(waitingOn, issue, facts, hebrew) {
@@ -448,52 +361,6 @@ function inferBlocker(waitingOn, issue, facts, hebrew) {
   return hebrew
     ? `הפנייה תקועה עד שיתקבל עדכון מ${waiting}.`
     : `This is stuck until we get an update from ${waiting}.`;
-}
-
-function buildThinking(issue, facts, waitingOn, hebrew) {
-  const waitHe = { client: 'הלקוח', hotel: 'בית המלון', supplier: 'הספק', internal: 'הסוכן' };
-  const waitEn = { client: 'the customer', hotel: 'the hotel', supplier: 'the supplier', internal: 'the agent' };
-  const steps = [];
-  steps.push(
-    hebrew
-      ? `הלקוח מבקש טיפול ב«${issue.label}»${facts.hotel ? ` מול ${facts.hotel}` : ''}.`
-      : `The customer needs help with “${issue.label}”${facts.hotel ? ` at ${facts.hotel}` : ''}.`
-  );
-  const bits = [];
-  if (facts.stay) bits.push(facts.stay);
-  if (facts.orderId) bits.push(facts.orderId);
-  if (facts.itinerary) bits.push(facts.itinerary);
-  if (facts.points) bits.push(hebrew ? `${facts.points} נקודות` : `${facts.points} points`);
-  if (facts.channel) bits.push(facts.channel);
-  if (bits.length) {
-    steps.push(hebrew ? `מהפנייה עצמה: ${bits.join(', ')}.` : `From the thread: ${bits.join(', ')}.`);
-  }
-  if (facts.refused) {
-    steps.push(
-      hebrew
-        ? 'המלון סירב לזיכוי/שינוי — המייל ללקוח צריך להיות סירוב אמפתי, לא הבטחה.'
-        : 'The hotel refused a refund/change — the customer email should be an empathetic refusal, not a promise.'
-    );
-  }
-  steps.push(
-    hebrew
-      ? `החסם עכשיו: ממתינים ל${waitHe[waitingOn] || waitingOn}.`
-      : `Current blocker: waiting on ${waitEn[waitingOn] || waitingOn}.`
-  );
-  steps.push(
-    hebrew
-      ? 'לכן: הודעות מוכנות להעתקה לפי נמען — ללקוח בעברית, למלון באנגלית — בלי יומן תאריכים.'
-      : 'So: ready-to-send messages by party — Hebrew to the customer, English to the hotel — not a dated log.'
-  );
-  return steps;
-}
-
-function buildIntro(ticket, facts, hebrew) {
-  const who = facts.guestFullName || facts.guestName || '';
-  if (hebrew) {
-    return `הנה ההודעות והסיכום לטיפול בטיקט (${ticket.id})${who ? ` של ${who}` : ''}:`;
-  }
-  return `Here are the messages and summary for ticket (${ticket.id})${who ? ` of ${who}` : ''}:`;
 }
 
 export const NOTE_FIELDS = [
@@ -668,10 +535,6 @@ function clientEmail(ticket, issue, facts, messages, hebrew) {
   return lines.join('\n');
 }
 
-function internalNote(essence, blocker) {
-  return [...essence, '', 'Blocker', blocker].join('\n');
-}
-
 function hotelOrSupplierMail(party, ticket, facts, messages, issue, hebrew) {
   const hotel = facts.hotel || '';
   const via = party === 'supplier' || (!hotel && facts.channel) ? facts.channel : '';
@@ -733,7 +596,7 @@ function draftHint(party, facts, hebrew) {
   return hebrew ? 'להדבקה כ-Internal Note ב-Zendesk:' : 'Paste this as the Zendesk Internal Note:';
 }
 
-function draftFor(party, index, ticket, issue, facts, messages, essence, blocker, hebrew, hotelInHebrew, note) {
+function draftFor(party, index, ticket, issue, facts, messages, hebrew, hotelInHebrew, note) {
   const n = index + 1;
   const guest = facts.guestFullName || facts.guestName;
   const labels = {
@@ -829,27 +692,14 @@ export function summarizeTicket(ticket, { forceHebrew = false } = {}) {
   const issue = inferIssue(ticket, messages, hebrew);
   const facts = extractFacts(ticket, messages);
   const waitingOn = inferWaitingOn(messages, issue.id, facts);
-  const essence = synthesizeEssence(messages, issue, facts, hebrew);
   const blocker = inferBlocker(waitingOn, issue, facts, hebrew);
-  const thinking = buildThinking(issue, facts, waitingOn, hebrew);
   const parties = partiesForDrafts(issue.id, messages, waitingOn, facts);
   const note = buildTicketNote(ticket, messages, issue, facts, hebrew, blocker);
 
   return {
-    summary: {
-      issueType: issue.label,
-      intro: buildIntro(ticket, facts, hebrew),
-      timeline: essence.length
-        ? essence
-        : [hebrew ? `פנייה #${ticket.id} — אין מספיק תוכן לתמצית.` : `Ticket #${ticket.id} — not enough content to summarize.`],
-      blocker,
-      waitingOn,
-      urgency: inferUrgency(issue.id, messages, hebrew),
-      thinking,
-      note,
-    },
+    summary: { note },
     drafts: parties.map((party, index) =>
-      draftFor(party, index, ticket, issue, facts, messages, essence, blocker, hebrew, hotelInHebrew, note)
+      draftFor(party, index, ticket, issue, facts, messages, hebrew, hotelInHebrew, note)
     ),
   };
 }

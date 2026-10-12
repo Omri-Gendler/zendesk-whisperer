@@ -1,4 +1,5 @@
-import { chromeLanguageModelStatus, isLoopbackHost, normalizeBaseUrl } from './local-llm.js';
+import { chromeLanguageModelStatus } from '../copilot/generate.js';
+import { isLoopbackHost, normalizeBaseUrl } from '../copilot/local.js';
 
 const form = document.getElementById('options-form');
 const useChromeAi = document.getElementById('use-chrome-ai');
@@ -47,7 +48,6 @@ async function saveSettings(url) {
     useChromeAi: useChromeAi.checked,
     ollamaUrl: url,
     ollamaModel: String(ollamaModel.value || 'llama3.1').trim() || 'llama3.1',
-    backendUrl: '',
   });
   ollamaUrl.value = url;
 }
