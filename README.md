@@ -3,7 +3,7 @@
 **On-device copilot for Arbitrip agents in Zendesk.**  
 Reads the open ticket from the page and returns a summary plus copy-ready drafts without sending the thread to the cloud.
 
-[Leadership pitch](docs/pitch.html) · Internal only · Not a Zendesk App · Not Chrome Web Store
+· Internal only · Not a Zendesk App · Not Chrome Web Store
 
 ---
 
